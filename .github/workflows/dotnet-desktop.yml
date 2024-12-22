@@ -34,9 +34,17 @@ jobs:
     - name: Setup MSBuild.exe
       uses: microsoft/setup-msbuild@v1
 
+    # 安装所需的工作负载
+    - name: Install required workloads
+      run: dotnet workload install microsoft-windows-sdk-full
+
+    # 检查已安装的运行时
+    - name: Check installed runtimes
+      run: dotnet --list-runtimes
+
     # 构建解决方案
     - name: Build the solution
-      run: dotnet publish -c Release -r ${{ matrix.runtime }} --self-contained false  # 发布项目
+      run: dotnet publish -c Release -r ${{ matrix.runtime }} --self-contained false --no-restore
 
     # 上传构建产物
     - name: Upload build artifacts
