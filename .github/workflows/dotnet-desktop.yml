@@ -1,0 +1,46 @@
+name: .NET Core Desktop
+
+on:
+  push:
+    branches: [ "main", "develop" ]  # 触发分支
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  build:
+    strategy:
+      matrix:
+        runtime: [win-x64, win-x86]  # 构建目标运行时
+
+    runs-on: windows-latest  # 运行环境
+
+    env:
+      Project_Name: FreeMove  # 项目名称
+      Target: net9.0-windows  # 目标框架
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v3
+      with:
+        fetch-depth: 0
+
+    # 安装 .NET Core SDK
+    - name: Install .NET Core
+      uses: actions/setup-dotnet@v3
+      with:
+        dotnet-version: 9.0.x  # 安装 .NET 9.0 SDK
+
+    # 添加 MSBuild 到 PATH
+    - name: Setup MSBuild.exe
+      uses: microsoft/setup-msbuild@v1
+
+    # 构建解决方案
+    - name: Build the solution
+      run: dotnet publish -c Release -r ${{ matrix.runtime }} --self-contained false  # 发布项目
+
+    # 上传构建产物
+    - name: Upload build artifacts
+      uses: actions/upload-artifact@v3
+      with:
+        name: ${{ env.Project_Name }}_${{ matrix.runtime }}.exe  # 产物名称
+        path: ${{ env.Project_Name }}/bin/Release/${{ env.Target }}/${{ matrix.runtime }}/publish/${{ env.Project_Name }}.exe  # 产物路径
