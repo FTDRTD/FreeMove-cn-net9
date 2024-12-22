@@ -2,7 +2,7 @@ name: .NET Core Desktop
 
 on:
   push:
-    branches: [ "main", "develop" ]  # 触发分支
+    branches: [ "main", "develop" ]
   pull_request:
     branches: [ "main" ]
 
@@ -10,13 +10,13 @@ jobs:
   build:
     strategy:
       matrix:
-        runtime: [win-x64, win-x86]  # 构建目标运行时
+        runtime: [win-x64, win-x86]
 
-    runs-on: windows-latest  # 运行环境
+    runs-on: windows-latest
 
     env:
-      Project_Name: FreeMove  # 项目名称
-      Target: net9.0-windows  # 目标框架
+      Project_Name: FreeMove
+      Target: net9.0-windows
 
     steps:
     - name: Checkout
@@ -28,7 +28,7 @@ jobs:
     - name: Install .NET Core
       uses: actions/setup-dotnet@v3
       with:
-        dotnet-version: 9.0.x  # 安装 .NET 9.0 SDK
+        dotnet-version: 9.0.x
 
     # 添加 MSBuild 到 PATH
     - name: Setup MSBuild.exe
@@ -36,7 +36,11 @@ jobs:
 
     # 安装所需的工作负载
     - name: Install required workloads
-      run: dotnet workload install microsoft-windows-sdk-full
+      timeout-minutes: 10  # 增加超时时间
+      run: |
+        dotnet workload install microsoft-net-sdk-emscripten
+        dotnet workload install microsoft-net-sdk-blazorwebassembly-aot
+        dotnet workload install microsoft-windows-sdk-full
 
     # 检查已安装的运行时
     - name: Check installed runtimes
@@ -50,5 +54,5 @@ jobs:
     - name: Upload build artifacts
       uses: actions/upload-artifact@v3
       with:
-        name: ${{ env.Project_Name }}_${{ matrix.runtime }}.exe  # 产物名称
-        path: ${{ env.Project_Name }}/bin/Release/${{ env.Target }}/${{ matrix.runtime }}/publish/${{ env.Project_Name }}.exe  # 产物路径
+        name: ${{ env.Project_Name }}_${{ matrix.runtime }}.exe
+        path: ${{ env.Project_Name }}/bin/Release/${{ env.Target }}/${{ matrix.runtime }}/publish/${{ env.Project_Name }}.exe
