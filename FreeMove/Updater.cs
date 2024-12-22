@@ -43,7 +43,13 @@ namespace FreeMove
         {
             this.Silent = Silent;
             Assembly assembly = Assembly.GetExecutingAssembly();
-            this.CurrentVersion = System.Diagnostics.FileVersionInfo.GetVersionInfo(System.Reflection.Assembly.GetExecutingAssembly().Location).FileVersion;
+            string assemblyLocation = System.Reflection.Assembly.GetExecutingAssembly().Location;
+            if (string.IsNullOrEmpty(assemblyLocation))
+            {
+                // 如果路径为空，使用当前目录作为默认路径
+                assemblyLocation = System.IO.Path.Combine(System.AppContext.BaseDirectory, "FreeMove.exe");
+            }
+            this.CurrentVersion = System.Diagnostics.FileVersionInfo.GetVersionInfo(assemblyLocation).FileVersion;
             InitializeComponent();
         }
 
