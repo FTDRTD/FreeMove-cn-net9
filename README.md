@@ -10,9 +10,6 @@ FreeMove 是一个用于自由移动目录的工具，不会破坏安装或快�
 1. 文件被移动到新位置。
 2. 在旧位置创建一个[符号链接](https://www.wikiwand.com/en/NTFS_junction_point)，指向新位置。任何尝试访问旧位置的程序都会自动重定向到新位置。
 
-## 下载
-[![Github All Releases](https://img.shields.io/github/downloads/imDema/FreeMove/total.svg)](https://github.com/imDema/FreeMove/releases/latest)
-
 #### 从GitHub下载
 [下载最新版本](https://github.com/FTDRTD/FreeMove-cn-net9/releases/tag/exe)
 
